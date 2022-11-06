@@ -53,8 +53,7 @@ int main() //main function body
     const int gravity{1'000}; // applying acceleration due to simulated impact of gravity using pixels per frame/ per frame
 
     // game audio
-    Music music = LoadMusicStream("resources/comingtotown.mp3"); // loading background music file from resources folder
-    music.looping = false;
+    Music music = LoadMusicStream("resources/music-comingtotown.mp3"); // loading background music file from resources folder
     PlayMusicStream(music);
     Sound soundJump = LoadSound("resources/sound-jump.mp3"); // loading jump sound file from resources folder
     Sound soundPass = LoadSound("resources/sound-pass.mp3"); // loading pass or win sound file from resources folder
@@ -98,16 +97,16 @@ int main() //main function body
     float finishLine{coals[hazardCount - 1].pos.x}; // x position of an invisible finish line to activate completion of game, leading to a winning state for the player. The hazard array (coals) has been called where I have accessed the final element in the hazard array - identified by calling the hazardCount (total number of hazards) minus one (since we are starting at zero so I need to adjust the number being recalled for the actual finish line)
 
     // non consistent hazard variables outside the for loop
-    coals[0].pos.x = windowDimensions[0];
-    coals[1].pos.x = windowDimensions[0] + 300;
-    coals[2].pos.x = windowDimensions[0] + 600;
-    coals[3].pos.x = windowDimensions[0] + 900;
-    coals[4].pos.x = windowDimensions[0] + 1100;
-    coals[5].pos.x = windowDimensions[0] + 1300;
-    coals[6].pos.x = windowDimensions[0] + 1500;
-    coals[7].pos.x = windowDimensions[0] + 1800;
-    coals[8].pos.x = windowDimensions[0] + 2000;
-    coals[9].pos.x = windowDimensions[0] + 2100;
+    coals[0].pos.x = windowDimensions[0]; // first hazard just off window
+    coals[1].pos.x = windowDimensions[0] + 300; // phase 1 of hazards 300 pixels away from eachother
+    coals[2].pos.x = windowDimensions[0] + 600; // phase 1 of hazards 300 pixels away from eachother
+    coals[3].pos.x = windowDimensions[0] + 900; // phase 1 of hazards 300 pixels away from eachother
+    coals[4].pos.x = windowDimensions[0] + 1100; // phase 2 of hazards 200 pixels away from eachother
+    coals[5].pos.x = windowDimensions[0] + 1300; // phase 2 of hazards 200 pixels away from eachother
+    coals[6].pos.x = windowDimensions[0] + 1500; // phase 2 of hazards 200 pixels away from eachother
+    coals[7].pos.x = windowDimensions[0] + 1800; // phase 3 of hazards 150 pixels away from eachother
+    coals[8].pos.x = windowDimensions[0] + 1950; // phase 3 of hazards 150 pixels away from eachother
+    coals[9].pos.x = windowDimensions[0] + 2100; // phase 3 of hazards 150 pixels away from eachother
 
     // hazard x velocity (pixels/ second)
     int coalVel{-200}; // setting the hazard its own velocity, noting that this is initialised in the negative since it is moving backwards from right to left
@@ -144,20 +143,20 @@ int main() //main function body
             UpdateMusicStream(music); //update music buffer with new stream which will loop background music
 
             // start screen before gameplay activates
-            if (!GameStarted)
+            if (!GameStarted) // if the Game Started variable is false then...
             {
                 // draw startscreen
                 DrawTexture(startground, 0.0, 0.0, WHITE); // background image
-                DrawText("Press Space Key to Start", (windowDimensions[0]/4), (windowDimensions[1]*0.87), 20, BLACK);
-                DrawText("Don't hit the burning coals!", (windowDimensions[0]/4), (windowDimensions[1]*0.93), 20, RED);
+                DrawText("Press Space Key to Start", (windowDimensions[0]/4), (windowDimensions[1]*0.87), 20, BLACK); // text instruction in black
+                DrawText("Don't hit the burning coals!", (windowDimensions[0]/4), (windowDimensions[1]*0.93), 20, RED); // additional text instruction in red
                 
-                if(IsKeyDown(KEY_SPACE))
+                if(IsKeyDown(KEY_SPACE)) // if user presses space bar then...
                 {
-                    GameStarted = true;
-                    PlaySound(soundPass);
+                    GameStarted = true; // activate Game Start function and
+                    PlaySound(soundPass); // play pass sound so user has audio prompt of action and start of gameplay
                 }
             }
-            else
+            else // if the if statement above is not true then do the following
             {
 
             // scroll and cycle the background
@@ -225,14 +224,13 @@ int main() //main function body
             }
 
             // reduce rising when jump is released
-            if (IsKeyReleased(KEY_SPACE) && velocity < 0)
+            if (IsKeyReleased(KEY_SPACE) && velocity < 0) // when space bar is released and velocity variable is below zero then...
             {
-                velocity = velocity/2;
-
+                velocity = velocity/2; //adjust velocity varible by half
             }
 
             // update hazard position
-            for (int i = 0; i < hazardCount; i++)
+            for (int i = 0; i < hazardCount; i++) // for loop, initialise variable i as zero, then when hazard count is less than i and one i
             {
                coals[i].pos.x += coalVel * dT;  // update x position every frame for each of the incoming hazards and making frame independent by multipying delta time which changes to pixels by frame
             }
@@ -254,7 +252,7 @@ int main() //main function body
             for (int i = 0; i < hazardCount; i++) // using a for loop which will loop over every element of the hazard coals array then update its animation frame in a single location which is a more efficient practice rather than coding the animation frame updates for each hazard 
             {
             // update hazard animation frame
-                coals[i] = updateAnimData(coals[i], dT, 7);
+                coals[i] = updateAnimData(coals[i], dT, 7); // call update anim data function and use its return value to update santa animation frame data
             }
 
             // collision rectangle to enable accurate collision detection between character and hazard
@@ -283,21 +281,28 @@ int main() //main function body
                 }
             }
 
-            if (collision)
+            if (collision) // if statement for when collision variable is activated
             {
                 // lose the game
-                PlaySound(soundFail);
-                DrawText("SAD SANTA!",windowDimensions[0]/5, 2*windowDimensions[1]/5,50,BLACK);
-                DrawText("SAD SANTA!",windowDimensions[0]/5-4, 2*windowDimensions[1]/5-3,50,WHITE);
-                DrawText("SAD SANTA!",windowDimensions[0]/5-5, 2*windowDimensions[1]/5-4,50,RED);
+                PlaySound(soundFail); // play fail sound
+                DrawText("SAD SANTA!",windowDimensions[0]/5, 2*windowDimensions[1]/5,50,BLACK); // write text dark shadow in black
+                DrawText("SAD SANTA!",windowDimensions[0]/5-4, 2*windowDimensions[1]/5-3,50,WHITE); // write text light shadow in white
+                DrawText("SAD SANTA!",windowDimensions[0]/5-5, 2*windowDimensions[1]/5-4,50,RED); // write text front in green
+
+                // restart the game
+                if(IsKeyDown(KEY_SPACE)) // if space key is pressed then...
+                {
+                    collision = false; //reset collision variable to allow game restart
+                    GameStarted = false; //reset game started variable to return to start screen
+                }
             }
-            else if (santaData.pos.x >= finishLine)
+            else if (santaData.pos.x >= finishLine) // if above if statement is not true then...
             {
                 // win the game
-                PlaySound(soundPass);
-                DrawText("HO HO HOORAY!",windowDimensions[0]/7, 2*windowDimensions[1]/5,50,BLACK);
-                DrawText("HO HO HOORAY!",windowDimensions[0]/7-4, 2*windowDimensions[1]/5-3,50,WHITE);
-                DrawText("HO HO HOORAY!",windowDimensions[0]/7-5, 2*windowDimensions[1]/5-4,50,GREEN);
+                PlaySound(soundPass); // play sound file called SoundPass
+                DrawText("HO HO HOORAY!",windowDimensions[0]/7, 2*windowDimensions[1]/5,50,BLACK); // write text dark shadow in black
+                DrawText("HO HO HOORAY!",windowDimensions[0]/7-4, 2*windowDimensions[1]/5-3,50,WHITE);  // write text light shadow in white
+                DrawText("HO HO HOORAY!",windowDimensions[0]/7-5, 2*windowDimensions[1]/5-4,50,GREEN);  // write text front in green
             }
             else
             {
