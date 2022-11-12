@@ -139,6 +139,7 @@ int main() //main function body
     Texture2D foreground = LoadTexture("resources/foreground-trees2x.png"); // loading in the third background first ready for later animation
     float fgX{}; // initialising a x coordinate variable for the foreground to zero using a float since we are to define a Vector 2
     Texture2D startground = LoadTexture("resources/start-screen.png"); // loading in the start screen background
+    //float ssX{}; // initialising a x coordinate variable for the foreground to zero using a float since we are to define a Vector 2
 
     bool collision = false; // creating boolian for a collision variable which will be later defined, this is initialised as false which enables a 1 life scenario (ie you lose if character collides with a single hazard)
 
